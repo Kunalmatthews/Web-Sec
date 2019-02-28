@@ -180,13 +180,17 @@ if (item === true){
 	
 	}
 
-else if (item === false){
+if (item === false){
 
 	console.log("Player loses");
-	results+= "<br>" + "Player wins";
+	results+= "<br>" + "<br>" +"Player wins";
 	}
-	resp.send(results);
-
+	
+	
+else 
+	results += "<br>" + "<br>" + "Tie";
+	
+resp.send(results);
 });
 
 app.listen(3000);
