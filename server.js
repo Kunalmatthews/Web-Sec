@@ -1,6 +1,7 @@
-//Import the express package
+//Enable strict mode
 'use strict'
 
+//Require express
 var express = require('express');
 var app = express();
 
@@ -16,7 +17,7 @@ app.get("/",function(req, resp){
 app.get("/results", function(req, resp){
 
 var user_mv = req.query.userchoice;
-	var results = "You chose: " + user_mv+ "<br>"+ "<br>";
+	var results = "You Chose: " + user_mv+ "<br>"+ "<br>";
 	if (user_mv === "rock")
 		user_mv = 0;
 	if (user_mv === "paper")
@@ -41,7 +42,7 @@ function player_win(user_mv){
 
 	var pcvar = getRandomInt(5);
 	console.log("PC value = " + pcvar);
-	results+= "The PC chose: " + pcvar;
+	results+= "The PC Chose: " + pcvar;
 	switch(pcvar){
 
 		case("Rock"):
@@ -208,6 +209,9 @@ else {
 	console.log();
 	results += "<br>" + "<br>" + "Tie";
 }
+
+results += "<br>" + "<br>" +"<br>" + "<br>" + 
+			"Player wins: " + player_win_num +"<br>" + "Server wins: "+ server_win_num ;
 resp.send(results);
 });
 
