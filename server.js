@@ -190,7 +190,7 @@ if (item === true){
 	console.log("Player wins: ", player_win_num);
 	console.log("Server wins: ", server_win_num);
 	console.log();
-	results+= "<br>" + "Player loses";
+	results+= "<br>" + "Player wins";
 	}
 
 else if (item === false){
@@ -199,7 +199,7 @@ else if (item === false){
 	console.log("Player wins: ", player_win_num);
 	console.log("Server wins: ", server_win_num);
 	console.log();
-	results+= "<br>" + "<br>" +"Player wins";
+	results+= "<br>" + "<br>" +"Player loses";
 	}
 	
 	
