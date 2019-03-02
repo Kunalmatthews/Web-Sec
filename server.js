@@ -7,6 +7,8 @@ var app = express();
 
 var player_win_num = 0;
 var server_win_num = 0;
+var games_played = 0;
+
 
 app.get("/",function(req, resp){
 
@@ -40,6 +42,8 @@ var user_mv = req.query.userchoice;
 
 function player_win(user_mv){
 
+
+	games_played++;
 	var pcvar = getRandomInt(5);
 	console.log("PC value = " + pcvar);
 	results+= "The PC Chose: " + pcvar;
@@ -189,8 +193,10 @@ if (item === true){
 	console.log("Player wins");
 	console.log("Player wins: ", player_win_num);
 	console.log("Server wins: ", server_win_num);
+	console.log("Games Played: ", games_played);
 	console.log();
-	results+= "<br>" + "Player wins";
+	results+= "<br>" + "Player Wins";
+
 	}
 
 else if (item === false){
@@ -198,21 +204,27 @@ else if (item === false){
 	console.log("Player loses");
 	console.log("Player wins: ", player_win_num);
 	console.log("Server wins: ", server_win_num);
+	console.log("Games Played: ", games_played);
 	console.log();
 	results+= "<br>" + "<br>" +"Player loses";
+
 	}
 	
 	
 else {
 	console.log("Player wins: ", player_win_num);
 	console.log("Server wins: ", server_win_num);
+	console.log("Games Played: ", games_played);
 	console.log();
 	results += "<br>" + "<br>" + "Tie";
+
 }
 
 results += "<br>" + "<br>" +"<br>" + "<br>" + 
-			"Player wins: " + player_win_num +"<br>" + "Server wins: "+ server_win_num ;
+			"Player wins: " + player_win_num +"<br>" + "Server wins: "+ server_win_num + "<br>" + "Games Played: " + games_played ;
 resp.send(results);
+
+
 });
 
 app.listen(3000);
