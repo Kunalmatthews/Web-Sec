@@ -4,6 +4,9 @@
 var express = require('express');
 var app = express();
 
+var player_win_num = 0;
+var server_win_num = 0;
+
 app.get("/",function(req, resp){
 
 	resp.sendFile(__dirname + "/index.html");
@@ -72,63 +75,70 @@ function player_win(user_mv){
 
 		case (0):
 		
-			if (pcvar === 2 || pcvar === 3)
+			if (pcvar === 2 || pcvar === 3){
+				player_win_num += 1;
 				return true;
-
+			}
 			if (pcvar === 0)
 				return -1;
 
-			else
-
-			return false;
-
+			else{
+				server_win_num += 1;
+				return false;
+			}
 		case (1):
 
-			if (pcvar === 4 || pcvar === 0)
+			if (pcvar === 4 || pcvar === 0){
+				player_win_num += 1;
 				return true;
-
+			}
 			if (pcvar === 1)
 				return -1;
 
-		else
-
-			return false;
-
+		else{
+				server_win_num += 1;
+				return false;
+		}
 		case (2):
 
-			if (pcvar === 1 || pcvar === 3)
+			if (pcvar === 1 || pcvar === 3){
+				player_win_num += 1;
 				return true;
-
+			}
 			if (pcvar === 2)
 				return -1;
 
-		else
-			return false;
-
+		else{
+				server_win_num += 1;
+				return false;
+		}
 
 		case (3):
 
-			if (pcvar === 1 || pcvar == 4)
+			if (pcvar === 1 || pcvar == 4){
+				player_win_num += 1;
 				return true;
-
+			}
 			if (pcvar === 3)
 				return -1;
 
-			else
-			return false;
-
+			else{
+				server_win_num += 1;
+				return false;
+			}
 		case (4):
 
-			if (pcvar === 0 || pcvar === 2)
+			if (pcvar === 0 || pcvar === 2){
+				player_win_num += 1;
 				return true;
-
+			}
 			if (pcvar === 4)
-
 				return -1;
 
-		else
-			return false;
-
+		else{
+				server_win_num += 1;
+				return false;
+		}
 
 	}
 
@@ -176,22 +186,29 @@ console.log(item);
 if (item === true){
 
 	console.log("Player wins");
+	console.log("Player wins: ", player_win_num);
+	console.log("Server wins: ", server_win_num);
+	console.log();
 	results+= "<br>" + "Player loses";
-	
 	}
 
-if (item === false){
+else if (item === false){
 
 	console.log("Player loses");
+	console.log("Player wins: ", player_win_num);
+	console.log("Server wins: ", server_win_num);
+	console.log();
 	results+= "<br>" + "<br>" +"Player wins";
 	}
 	
 	
-else 
+else {
+	console.log("Player wins: ", player_win_num);
+	console.log("Server wins: ", server_win_num);
+	console.log();
 	results += "<br>" + "<br>" + "Tie";
-	
+}
 resp.send(results);
 });
 
 app.listen(3000);
-
