@@ -2,7 +2,7 @@ Group Members:
 	Kunal Matthews
 	Paul Lindberg	phindenburgh@gmail.com
 	Hamesh Sharma	hksharma@csu.fullerton.edu
-	Nikita Gupta
+	Nikita Gupta	nikita_95@csu.fullerton.edu
 
 Instructions to ecexute file:
 	1) Download tar file 
