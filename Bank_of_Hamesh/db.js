@@ -23,6 +23,15 @@ var accountStrings = [];
 
 
 function generateDash(username, money, error){
+
+if(!money)
+{
+	let x = userIndex(username);
+	money = accounts[x].cash;
+}
+
+
+
 var page = "<html><body><h1>Welcome, " + username + " To the Bank Of Hamesh!</h1>    <h1>Dashboard Actions:</h1>";
 page += "<br>Your balance: $" + money;
 page += "<form action='/dashboard' method='post'>";
@@ -99,7 +108,6 @@ for (let i = 0; i<accounts.length;++i){
 	if (user === accounts[i].username)
 		return i;
 	else
-		console.log("Account not found");
 	}
 
 }
@@ -285,7 +293,7 @@ app.post("/dashboard", function(req, resp){
 	}
 	else
 	{
-		res.redirect('/');
+		resp.redirect('/');
 	}
 });
 
@@ -306,9 +314,6 @@ app.post("/login", function(req, resp){
 	if (result){
 	let x = userIndex(user);
 	req.session.username = accounts[x].username;
-	console.log(req.session);
-	
-	
 	
 	resp.send(generateDash(user, accounts[x].cash)); //CHANGE INDEX.HTML TO DASHBOARD
 	}
@@ -333,12 +338,15 @@ app.post("/getData", function(req, resp){
 		fs.appendFileSync("out.txt", "<account><username>" + temp.username + "</username><password>"
 	 	+ temp.pass + "</password><cash>" + temp.cash + "</cash></account>\n"); 
 		
-		resp.send(generateDash(user));
+		
+		let x = userIndex(user);
+		req.session.username = accounts[x].username;
+		resp.send(generateDash(user, 500));
 		}
 		
 		
 	else{
-	resp.send("<p>Login failed: Account Exists or weak password (minimum length of 6 and 2 of the following: one capital letter, one number, or one special character</p><button onclick='goBack()'>Go Back</button>" +
+	resp.send("<p>Login failed: Account Exists or weak password (minimum one capital letter and one special character</p><button onclick='goBack()'>Go Back</button>" +
 	"<script>function goBack(){window.history.back();}</script>");
 }
 
