@@ -23,6 +23,15 @@ return final[0];
 //Takes the data from the out.txt file and removes XML tags.
 
 
+
+
+
+
+
+
+
+
+
 function escape(input){
 let final = input.replace(REPLACE, '');
 console.log("Escape results: " + final);
@@ -40,7 +49,9 @@ function createAccount(username, pass, cash){
 
 function accountValid(user,pass){
 
+
 for (let i = 0; i<accounts.length;i++){
+	console.log(user + accounts[i]);
 	if (user === accounts[i].username){
 		return false;
 		}
@@ -51,12 +62,52 @@ return true;
 
 var accounts = [];
 
+
+
+
+
+function accountVerify(user,pass){
+
+
+for (let i = 0; i<accounts.length; i++){
+
+	if (user === accounts[i].username){
+	
+		if (pass === accounts[i].pass){
+			return true;
+		}
+	}
+}
+return false;
+
+}
+
+
+
+
 app.get("/", function(req,res){
 
 	res.sendFile(__dirname + "/index.html");
 	});
 //Called when the user requests the index page.
 
+
+
+app.post("/login", function(req, resp){
+	console.log("login function");
+	let user = escape(req.body.user1);
+	let pass = escape(req.body.pass1);
+	let result = accountVerify(user,pass);
+	console.log("Login successful " + result);
+	if (result){
+	resp.sendFile(__dirname + "/index.html"); //CHANGE INDEX.HTML TO DASHBOARD
+	}
+	else{
+	resp.send("<p>Login failed: Incorrect Username/Password</p><button onclick='goBack()'>Go Back</button>" +
+	"<script>function goBack(){window.history.back();}</script>");
+	}
+
+});
 
 app.post("/getData", function(req, resp){
 	let user = escape(req.body.user);

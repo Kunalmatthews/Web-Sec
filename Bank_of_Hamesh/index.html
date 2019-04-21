@@ -4,7 +4,23 @@
 <title>Database Demo</title>
 </head>
 <body>
-    <h1>Create Account</h1>
+   
+    <h4>Login Here</h4>
+        <form action="/login" method="post">
+            <label for="user1">Username:</label>
+            <input type="text" id="user1" name="user1" placeholder="Enter your username" />
+	<br>
+            <label for="pass1">Password:</label>
+            <input type="password" name= "pass1" id="pass1" placeholder="Enter your password" />
+	<br>
+            <input type="submit" value="Submit" />
+
+    </form>
+    
+    
+    
+
+     <h1>No account? Create one Now!</h1>
     <form action="/getData" method="post">
             <label for="user">Username:</label>
             <input type="text" id="user" name="user" placeholder="Enter your username" />
@@ -16,16 +32,9 @@
 
     </form>
     <br>
-    <h4>Login Here</h4>
-        <form action="/login" method="post">
-            <label for="user">Username:</label>
-            <input type="text" id="user" name="user" placeholder="Enter your username" />
-	<br>
-            <label for="pass">Password:</label>
-            <input type="password" name= "pass" id="pass" placeholder="Enter your password" />
-	<br>
-            <input type="submit" value="Submit" />
-
-    </form>
+    
+    
 </body>
 </html>
+
+
