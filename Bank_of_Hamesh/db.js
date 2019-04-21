@@ -13,8 +13,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 var accountStrings = [];
 
 
-function generateDash(username){
-var page = "<html><body>Welcome " + username + "</body></html>";
+function generateDash(username, money){
+var page = "<html><body><h1>Welcome, " + username + " To the Bank Of Hamesh!</h1>    <h1>Dashboard Actions:</h1>";
+page += "<br>Your balance: $" + money;
+page += "<form action='/dashboard' method='post'>";
+page += "<input type='radio' name='choice' value='deposit'> <label for='user'>Deposit:</label> <input type='text' id='deposit_value' name='deposit_val' placeholder='Enter value to Deposit' /> <br><br>";
+page += "<input type='radio' name='choice' value='withdraw'>";
+page += "<label for='user'>Withdraw:</label>";
+page += "<input type='text' id='Withdraw_value' name='withdraw_val' placeholder='Enter value to Withdraw' />";
+page += "<br><br>";
+page += "<input type='radio' name='choice' value='transfer'>";
+page += "<label for='user'>Transfer:</label>";
+page += "<input type='text' id='Withdraw_value' name='transfer_val' placeholder='Enter value to Transfer' />";
+page += "<label for='user'>Send to:</label>";
+page += "<input type='text' id='Withdraw_value' name='transfer_val' placeholder='Enter Username' />";
+page += "<br><br>";
+page += "<input type='submit' value='Do The Stuff' />    </form>";
+page += "</body>";
+page += "</html>";
 return page;
 
 
@@ -37,6 +53,15 @@ return final[0];
 //Takes the data from the out.txt file and removes XML tags.
 
 
+function userIndex(user){
+for (let i = 0; i<accounts.length;++i){
+	if (user === accounts[i].username)
+		return i;
+	else
+		console.log("MAJOR ERROR - VERY BAD");
+	}
+
+}
 
 
 
@@ -152,7 +177,9 @@ app.post("/login", function(req, resp){
 	let result = accountVerify(user,pass);
 	console.log("Login successful " + result);
 	if (result){
-	resp.send(generateDash(user)); //CHANGE INDEX.HTML TO DASHBOARD
+	let x = userIndex(user);
+	
+	resp.send(generateDash(user, accounts[x].cash)); //CHANGE INDEX.HTML TO DASHBOARD
 	}
 	else{
 	resp.send("<p>Login failed: Incorrect Username/Password</p><button onclick='goBack()'>Go Back</button>" +
