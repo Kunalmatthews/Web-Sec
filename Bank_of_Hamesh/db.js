@@ -5,12 +5,25 @@ var bodyParser = require("body-parser");
 var app = express();
 var bleach = require('bleach');
 
-
+var accounts = [];
 const REGEX = [/<username>(.*?)<\/username>/g, /<password>(.*?)<\/password>/g, /<cash>(.*?)<\/cash>/g];
 const REPLACE = /<\/?[^>]+(>|$)/g;
 
 app.use(bodyParser.urlencoded({ extended: true }));
 var accountStrings = [];
+
+
+function generateDash(username){
+var page = "<html><body>Welcome " + username + "</body></html>";
+return page;
+
+
+}
+
+
+
+
+
 
 //END OF GLOBALS
 
@@ -25,6 +38,44 @@ return final[0];
 
 
 
+
+
+
+function check_pass(val)
+{
+    var no = 0;
+    if(val!="")
+    {
+        // If the password length is less than or equal to 6
+        if(val.length<=6){
+            no=1;
+        }
+
+        // If the password length is greater than 6 and contain any lowercase alphabet or any number or any special character
+        if(val.length>6 && (val.match(/[a-z]/) || val.match(/\d+/) || val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))){
+            no=2;
+        }
+
+        // If the password length is greater than 6 and contain alphabet,number,special character respectively
+        if(val.length>6 && ((val.match(/[a-z]/) && val.match(/\d+/)) || (val.match(/\d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)) || (val.match(/[a-z]/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)))){
+            no=3;
+        }
+
+        // If the password length is greater than 6 and must contain alphabets,numbers and special characters
+        if(val.length>6 && val.match(/[a-z]/) && val.match(/\d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)){
+            no=4;
+        }
+    }
+
+    if (no === 3 || no === 4){
+        //console.log("is strong");
+        return true;
+    }
+    else{
+        //console.log("NOT strong");
+        return false;
+    }
+}
 
 
 
@@ -61,7 +112,7 @@ for (let i = 0; i<accounts.length;i++){
 return true;
 }
 
-var accounts = [];
+
 
 
 
@@ -101,7 +152,7 @@ app.post("/login", function(req, resp){
 	let result = accountVerify(user,pass);
 	console.log("Login successful " + result);
 	if (result){
-	resp.sendFile(__dirname + "/index.html"); //CHANGE INDEX.HTML TO DASHBOARD
+	resp.send(generateDash(user)); //CHANGE INDEX.HTML TO DASHBOARD
 	}
 	else{
 	resp.send("<p>Login failed: Incorrect Username/Password</p><button onclick='goBack()'>Go Back</button>" +
@@ -113,7 +164,9 @@ app.post("/login", function(req, resp){
 app.post("/getData", function(req, resp){
 	let user = bleach.sanitize(req.body.user);
 	let pass = bleach.sanitize(req.body.pass);
-	if (accountValid(user,pass)){
+	if (accountValid(user,pass) && check_pass(pass)){
+	
+
 		console.log("Got user input: " + user);
 		console.log("Got user input: " + pass);
 		let temp = new createAccount(user, pass, 500);
@@ -121,13 +174,18 @@ app.post("/getData", function(req, resp){
 		console.log(accounts);
 		fs.appendFileSync("out.txt", "<account><username>" + temp.username + "</username><password>"
 	 	+ temp.pass + "</password><cash>" + temp.cash + "</cash></account>\n"); 
+		
+		resp.send(generateDash(user));
 		}
+		
+		
 	else{
-	resp.send("<p>Login failed: Account Exists</p><button onclick='goBack()'>Go Back</button>" +
-	"<script>function goBack(){window.history.back();}</script>"
-	);
+	resp.send("<p>Login failed: Account Exists or weak password (minimum one capital letter and one special character</p><button onclick='goBack()'>Go Back</button>" +
+	"<script>function goBack(){window.history.back();}</script>");
 }
-	resp.sendFile(__dirname + "/index.html");
+
+
+
 });
 
 
