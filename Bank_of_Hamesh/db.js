@@ -4,16 +4,25 @@ var fs = require("fs");
 var bodyParser = require("body-parser");
 var app = express();
 var bleach = require('bleach');
+const sessions = require('client-sessions');
 
 var accounts = [];
 const REGEX = [/<username>(.*?)<\/username>/g, /<password>(.*?)<\/password>/g, /<cash>(.*?)<\/cash>/g];
 const REPLACE = /<\/?[^>]+(>|$)/g;
 
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(sessions({
+	cookieName: 'session',
+	secret: 'ksdf76s78dHSDKFJSDKF8HJJ737j',
+	duration: 24 * 60 * 60 * 1000,
+	activeDuration: 1000 * 60 * 5,
+	}));
+
 var accountStrings = [];
 
 
-function generateDash(username, money){
+function generateDash(username, money, error){
 var page = "<html><body><h1>Welcome, " + username + " To the Bank Of Hamesh!</h1>    <h1>Dashboard Actions:</h1>";
 page += "<br>Your balance: $" + money;
 page += "<form action='/dashboard' method='post'>";
@@ -29,6 +38,18 @@ page += "<label for='user'>Send to:</label>";
 page += "<input type='text' id='Withdraw_value' name='transfer_val' placeholder='Enter Username' />";
 page += "<br><br>";
 page += "<input type='submit' value='Do The Stuff' />    </form>";
+if (error === 1)
+{
+	page +="<br>You do not have enough money to do that...";
+}
+if (error === 2)
+{
+	page +="<br>Target Account Invalid...";
+}
+page += "<form action='/logout' method='post'>";
+page += "<input type='submit' value='Logout' name='logout' id = 'logout'/></form>";
+
+
 page += "</body>";
 page += "</html>";
 return page;
@@ -38,6 +59,26 @@ return page;
 
 
 
+function buildDB(){
+	fs.writeFileSync("out.txt", "<account><username>" + accounts[0].username + "</username><password>"
+	 + accounts[0].pass + "</password><cash>" + accounts[0].cash + "</cash></account>\n"); 
+	 for (let i = 1; i<accounts.length;i++)
+	 {
+	 	fs.appendFileSync("out.txt", "<account><username>" + accounts[i].username + "</username><password>"
+	 	+ accounts[i].pass + "</password><cash>" + accounts[i].cash + "</cash></account>\n"); 
+	 
+	 }
+}
+
+
+function parseAdd(val1, val2){
+
+var a = parseInt(val1, 10);
+var b = parseInt(val2, 10);
+
+
+return a + b;
+}
 
 
 
@@ -58,7 +99,7 @@ for (let i = 0; i<accounts.length;++i){
 	if (user === accounts[i].username)
 		return i;
 	else
-		console.log("MAJOR ERROR - VERY BAD");
+		console.log("Account not found");
 	}
 
 }
@@ -124,7 +165,7 @@ function createAccount(username, pass, cash){
 //Creates an instance of an account object
 
 
-function accountValid(user,pass){
+function accountValid(user){
 
 
 for (let i = 0; i<accounts.length;i++){
@@ -136,6 +177,7 @@ for (let i = 0; i<accounts.length;i++){
 
 return true;
 }
+//RETURNS FALSE ON ACCOUNT MATCH, TRUE ON NO MATCH
 
 
 
@@ -168,6 +210,91 @@ app.get("/", function(req,res){
 	});
 //Called when the user requests the index page.
 
+app.post("/dashboard", function(req, resp){
+	if (req.session.username)
+	{
+		let error = 0;
+		let index = userIndex(req.session.username);
+	
+		if (req.body.choice === 'deposit')
+		{
+			let result = bleach.sanitize(req.body.deposit_val);
+			accounts[index].cash = parseAdd(accounts[index].cash,result);
+			buildDB();
+		}
+		else if (req.body.choice === 'withdraw')
+		{
+			let result = bleach.sanitize(req.body.withdraw_val);
+		
+			if (result <= accounts[index].cash)
+			{
+				accounts[index].cash -= result;
+				buildDB();
+				
+			}
+			else
+			{
+				error = 1;
+			}
+	
+		}
+	
+		else if (req.body.choice === 'transfer')
+		{
+			let value = bleach.sanitize(req.body.transfer_val[0]);
+			let target = bleach.sanitize(req.body.transfer_val[1]);
+		
+		
+			if (value <= accounts[index].cash)
+			{
+			
+				if(!accountValid(target))
+				{
+					let x = userIndex(target);
+					accounts[index].cash -= value;
+					accounts[x].cash = parseAdd(accounts[x].cash,value);
+					buildDB();
+				}
+			
+			}
+			else
+			{
+				error = 1;
+			}
+		
+			if(accountValid(target))
+			{
+				error = 2;
+			}
+
+		}
+	
+		switch(error)
+		{
+			case 0: 
+				resp.send(generateDash(req.session.username,accounts[index].cash));
+				break;
+			case 1:
+				resp.send(generateDash(req.session.username,accounts[index].cash, error));
+				break;
+			case 2:
+				resp.send(generateDash(req.session.username,accounts[index].cash, error));
+				break;
+		}
+	
+	}
+	else
+	{
+		res.redirect('/');
+	}
+});
+
+
+app.post("/logout", function(req, resp){
+	req.session.reset();
+	resp.redirect('/');
+
+});
 
 
 app.post("/login", function(req, resp){
@@ -178,6 +305,10 @@ app.post("/login", function(req, resp){
 	console.log("Login successful " + result);
 	if (result){
 	let x = userIndex(user);
+	req.session.username = accounts[x].username;
+	console.log(req.session);
+	
+	
 	
 	resp.send(generateDash(user, accounts[x].cash)); //CHANGE INDEX.HTML TO DASHBOARD
 	}
