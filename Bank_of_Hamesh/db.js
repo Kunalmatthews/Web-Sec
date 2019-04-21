@@ -3,6 +3,7 @@ var express = require("express");
 var fs = require("fs");
 var bodyParser = require("body-parser");
 var app = express();
+var bleach = require('bleach');
 
 
 const REGEX = [/<username>(.*?)<\/username>/g, /<password>(.*?)<\/password>/g, /<cash>(.*?)<\/cash>/g];
@@ -95,8 +96,8 @@ app.get("/", function(req,res){
 
 app.post("/login", function(req, resp){
 	console.log("login function");
-	let user = escape(req.body.user1);
-	let pass = escape(req.body.pass1);
+	let user = bleach.sanitize(req.body.user1);
+	let pass = bleach.sanitize(req.body.pass1);
 	let result = accountVerify(user,pass);
 	console.log("Login successful " + result);
 	if (result){
@@ -110,8 +111,8 @@ app.post("/login", function(req, resp){
 });
 
 app.post("/getData", function(req, resp){
-	let user = escape(req.body.user);
-	let pass = escape(req.body.pass);
+	let user = bleach.sanitize(req.body.user);
+	let pass = bleach.sanitize(req.body.pass);
 	if (accountValid(user,pass)){
 		console.log("Got user input: " + user);
 		console.log("Got user input: " + pass);
