@@ -1,3 +1,1 @@
-<account><username>ryaib</username><password>test</password><cash>500</cash></account>
-<account><username>test</username><password>meme</password><cash>500</cash></account>
-<account><username>sexyhamesh</username><password>hameshissexy</password><cash>500</cash></account>
+
