@@ -107,7 +107,6 @@ function userIndex(user){
 for (let i = 0; i<accounts.length;++i){
 	if (user === accounts[i].username)
 		return i;
-	else
 	}
 
 }
