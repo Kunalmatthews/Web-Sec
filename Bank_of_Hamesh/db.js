@@ -5,11 +5,28 @@ var bodyParser = require("body-parser");
 var app = express();
 var bleach = require('bleach');
 const sessions = require('client-sessions');
+const csp = require('helmet-csp')
 
 var accounts = [];
 const REGEX = [/<username>(.*?)<\/username>/g, /<password>(.*?)<\/password>/g, /<cash>(.*?)<\/cash>/g];
 const REPLACE = /<\/?[^>]+(>|$)/g;
 
+app.use((csp({//Requires helmet-csp
+  // Specify directives as normal.
+  directives: {
+    defaultSrc: ["'self'", 'default.com'],
+    scriptSrc: ["'self'", "'unsafe-inline'"],
+    //styleSrc: ['style.com'],
+    //fontSrc: ["'self'", 'fonts.com'],
+    //imgSrc: ['img.com', 'data:'],
+    //sandbox: ['allow-forms', 'allow-scripts'],
+    reportUri: '/report-violation',
+    //objectSrc: ["'none'"],
+    //upgradeInsecureRequests: true,
+    //workerSrc: false  // This is not set.
+  }
+  })));
+  
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(sessions({
