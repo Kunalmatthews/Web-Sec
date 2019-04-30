@@ -55,6 +55,10 @@ if (error === 2)
 {
 	page +="<br>Target Account Invalid...";
 }
+if (error === 3)
+{
+	page +="<br>ERROR: INVALID INPUT";
+}
 page += "<form action='/logout' method='post'>";
 page += "<input type='submit' value='Logout' name='logout' id = 'logout'/></form>";
 
@@ -226,12 +230,20 @@ app.post("/dashboard", function(req, resp){
 		if (req.body.choice === 'deposit')
 		{
 			let result = bleach.sanitize(req.body.deposit_val);
+			if (result < 0){
+			result = 0;
+			error = 3;
+			}
 			accounts[index].cash = parseAdd(accounts[index].cash,result);
 			buildDB();
 		}
 		else if (req.body.choice === 'withdraw')
 		{
 			let result = bleach.sanitize(req.body.withdraw_val);
+			if (result < 0){
+			result = 0;
+			error = 3;
+			}
 		
 			if (result <= accounts[index].cash)
 			{
@@ -249,6 +261,9 @@ app.post("/dashboard", function(req, resp){
 		else if (req.body.choice === 'transfer')
 		{
 			let value = bleach.sanitize(req.body.transfer_val[0]);
+			if (value < 0){
+			value = 0;
+			}
 			let target = bleach.sanitize(req.body.transfer_val[1]);
 		
 		
@@ -285,6 +300,9 @@ app.post("/dashboard", function(req, resp){
 				resp.send(generateDash(req.session.username,accounts[index].cash, error));
 				break;
 			case 2:
+				resp.send(generateDash(req.session.username,accounts[index].cash, error));
+				break;
+			case 3:
 				resp.send(generateDash(req.session.username,accounts[index].cash, error));
 				break;
 		}
