@@ -349,6 +349,8 @@ app.post("/login", function(req, resp){
 	let x = userIndex(user);
 	req.session.username = accounts[x].username;
 	
+	resp.cookie('sessionid', '1',{httpOnly: true});
+	
 	resp.send(generateDash(user, accounts[x].cash)); //CHANGE INDEX.HTML TO DASHBOARD
 	}
 	else{
