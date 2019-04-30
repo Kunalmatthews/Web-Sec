@@ -363,7 +363,7 @@ app.post("/getData", function(req, resp){
 		
 		
 	else{
-	resp.send("<p>Login failed: Account Exists or weak password (minimum one capital letter and one special character</p><button onclick='goBack()'>Go Back</button>" +
+	resp.send("<p>Login failed: Account Exists or weak password (Password must be minimum 6 characters and requires at least 2 of the following: one capital letter, one lowercase letter, one special character</p><button onclick='goBack()'>Go Back</button>" +
 	"<script>function goBack(){window.history.back();}</script>");
 }
 
