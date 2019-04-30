@@ -141,22 +141,22 @@ function check_pass(val)
     if(val!="")
     {
         // If the password length is less than or equal to 6
-        if(val.length<=6){
+        if(val.length<6){
             no=1;
         }
 
         // If the password length is greater than 6 and contain any lowercase alphabet or any number or any special character
-        if(val.length>6 && (val.match(/[a-z]/) || val.match(/\d+/) || val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))){
+        if(val.length>=6 && (val.match(/[a-z]/) || val.match(/\d+/) || val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))){
             no=2;
         }
 
         // If the password length is greater than 6 and contain alphabet,number,special character respectively
-        if(val.length>6 && ((val.match(/[a-z]/) && val.match(/\d+/)) || (val.match(/\d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)) || (val.match(/[a-z]/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)))){
+        if(val.length>=6 && ((val.match(/[a-z]/) && val.match(/\d+/)) || (val.match(/\d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)) || (val.match(/[a-z]/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)))){
             no=3;
         }
 
         // If the password length is greater than 6 and must contain alphabets,numbers and special characters
-        if(val.length>6 && val.match(/[a-z]/) && val.match(/\d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)){
+        if(val.length>=6 && val.match(/[a-z]/) && val.match(/\d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)){
             no=4;
         }
     }
