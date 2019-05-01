@@ -8,7 +8,7 @@ const sessions = require('client-sessions');
 const csp = require('helmet-csp')
 
 var accounts = [];
-const REGEX = [/<username>(.*?)<\/username>/g, /<password>(.*?)<\/password>/g, /<cash>(.*?)<\/cash>/g];
+const REGEX = [/<username>(.*?)<\/username>/g, /<password>(.*?)<\/password>/g, /<cash>(.*?)<\/cash>/g, /<fname>(.*?)<\/fname>/g, /<lname>(.*?)<\/lname>/g, /<address>(.*?)<\/address>/g,];
 const REPLACE = /<\/?[^>]+(>|$)/g;
 
 app.use((csp({//Requires helmet-csp
@@ -26,6 +26,7 @@ app.use((csp({//Requires helmet-csp
     //workerSrc: false  // This is not set.
   }
   })));
+
   
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -91,11 +92,12 @@ return page;
 
 function buildDB(){
 	fs.writeFileSync("out.txt", "<account><username>" + accounts[0].username + "</username><password>"
-	 + accounts[0].pass + "</password><cash>" + accounts[0].cash + "</cash></account>\n"); 
+	 	+ accounts[0].pass + "</password><cash>" + accounts[0].cash + "</cash><fname>" + accounts[0].fname + "</fname><lname>" + accounts[0].lname + "</lname><address>" + accounts[0].address + "</address></account>\n"); 
+	 
 	 for (let i = 1; i<accounts.length;i++)
 	 {
 	 	fs.appendFileSync("out.txt", "<account><username>" + accounts[i].username + "</username><password>"
-	 	+ accounts[i].pass + "</password><cash>" + accounts[i].cash + "</cash></account>\n"); 
+	 	+ accounts[i].pass + "</password><cash>" + accounts[i].cash + "</cash><fname>" + accounts[i].fname + "</fname><lname>" + accounts[i].lname + "</lname><address>" + accounts[i].address + "</address></account>\n"); 
 	 
 	 }
 }
@@ -185,10 +187,13 @@ return final;
 
 }
 
-function createAccount(username, pass, cash){
+function createAccount(username, pass, cash, fname, lname, address){
 	this.username = username;
 	this.pass = pass;
 	this.cash = cash;
+	this.fname = fname;
+	this.lname = lname;
+	this.address = address;
 }
 //Creates an instance of an account object
 
@@ -361,16 +366,19 @@ app.post("/login", function(req, resp){
 app.post("/getData", function(req, resp){
 	let user = bleach.sanitize(req.body.user);
 	let pass = bleach.sanitize(req.body.pass);
-	if (accountValid(user,pass) && check_pass(pass)){
+	let fname = bleach.sanitize(req.body.fname);
+	let lname = bleach.sanitize(req.body.lname);
+	let address = bleach.sanitize(req.body.address);
+	if (accountValid(user,pass) && check_pass(pass) && fname && lname && address){
 	
 
 		console.log("Got user input: " + user);
 		console.log("Got user input: " + pass);
-		let temp = new createAccount(user, pass, 500);
+		let temp = new createAccount(user, pass, 500, fname, lname, address);
 		accounts.push(temp);
 		console.log(accounts);
 		fs.appendFileSync("out.txt", "<account><username>" + temp.username + "</username><password>"
-	 	+ temp.pass + "</password><cash>" + temp.cash + "</cash></account>\n"); 
+	 	+ temp.pass + "</password><cash>" + temp.cash + "</cash><fname>" + temp.fname + "</fname><lname>" + temp.lname + "</lname><address>" + temp.address + "</address></account>\n"); 
 		
 		
 		let x = userIndex(user);
@@ -380,7 +388,7 @@ app.post("/getData", function(req, resp){
 		
 		
 	else{
-	resp.send("<p>Login failed: Account Exists or weak password (Password must be minimum 6 characters and requires at least 2 of the following: one capital letter, one lowercase letter, one special character</p><button onclick='goBack()'>Go Back</button>" +
+	resp.send("<p>Login failed: Account Exists, missing information, or weak password (minimum of 6 characters with one capital letter and one special character)</p><button onclick='goBack()'>Go Back</button>" +
 	"<script>function goBack(){window.history.back();}</script>");
 }
 
@@ -403,7 +411,7 @@ if (result){
 	
 	
 	for (let i = 0; i<parse_list.length; ++i){
-		let temp = new createAccount(parseUser(parse_list,i,0), parseUser(parse_list,i,1), parseUser(parse_list,i,2));
+		let temp = new createAccount(parseUser(parse_list,i,0), parseUser(parse_list,i,1), parseUser(parse_list,i,2), parseUser(parse_list,i,3), parseUser(parse_list,i,4), parseUser(parse_list,i,5));
 		accounts.push(temp);
 	}
 	console.log(accounts);
