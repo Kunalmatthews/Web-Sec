@@ -53,14 +53,14 @@ if(!money)
 var page = "<html><body><h1>Welcome, " + username + " To the Bank Of Hamesh!</h1>    <h1>Dashboard Actions:</h1>";
 page += "<br>Your balance: $" + money;
 page += "<form action='/dashboard' method='post'>";
-page += "<input type='radio' name='choice' value='deposit'> <label for='user'>Deposit:</label> <input type='text' id='deposit_value' name='deposit_val' placeholder='Enter value to Deposit' /> <br><br>";
+page += "<input type='radio' name='choice' value='deposit'> <label for='user'>Deposit:</label> <input type='number' id='deposit_value' name='deposit_val' placeholder='Enter value to Deposit' /> <br><br>";
 page += "<input type='radio' name='choice' value='withdraw'>";
 page += "<label for='user'>Withdraw:</label>";
-page += "<input type='text' id='Withdraw_value' name='withdraw_val' placeholder='Enter value to Withdraw' />";
+page += "<input type='number' id='Withdraw_value' name='withdraw_val' placeholder='Enter value to Withdraw' />";
 page += "<br><br>";
 page += "<input type='radio' name='choice' value='transfer'>";
 page += "<label for='user'>Transfer:</label>";
-page += "<input type='text' id='Withdraw_value' name='transfer_val' placeholder='Enter value to Transfer' />";
+page += "<input type='number' id='Withdraw_value' name='transfer_val' placeholder='Enter value to Transfer' />";
 page += "<label for='user'>Send to:</label>";
 page += "<input type='text' id='Withdraw_value' name='transfer_val' placeholder='Enter Username' />";
 page += "<br><br>";
