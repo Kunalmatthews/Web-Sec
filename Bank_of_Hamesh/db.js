@@ -102,6 +102,13 @@ function buildDB(){
 	 }
 }
 
+function escapeReplace(input){
+input = bleach.sanitize(input);
+input = input.replace(/<{()}>/g, '');
+console.log(input);
+return input;
+
+}
 
 function parseAdd(val1, val2){
 
@@ -251,17 +258,20 @@ app.post("/dashboard", function(req, resp){
 	
 		if (req.body.choice === 'deposit')
 		{
-			let result = bleach.sanitize(req.body.deposit_val);
+
+			let result = escapeReplace(req.body.deposit_val);
+			
 			if (result < 0){
 			result = 0;
 			error = 3;
 			}
 			accounts[index].cash = parseAdd(accounts[index].cash,result);
+
 			buildDB();
 		}
 		else if (req.body.choice === 'withdraw')
 		{
-			let result = bleach.sanitize(req.body.withdraw_val);
+			let result = escapeReplace(req.body.withdraw_val);
 			if (result < 0){
 			result = 0;
 			error = 3;
@@ -282,11 +292,11 @@ app.post("/dashboard", function(req, resp){
 	
 		else if (req.body.choice === 'transfer')
 		{
-			let value = bleach.sanitize(req.body.transfer_val[0]);
+			let value = escapeReplace(req.body.transfer_val[0]);
 			if (value < 0){
 			value = 0;
 			}
-			let target = bleach.sanitize(req.body.transfer_val[1]);
+			let target = escapeReplace(req.body.transfer_val[1]);
 		
 		
 			if (value <= accounts[index].cash)
@@ -346,8 +356,8 @@ app.post("/logout", function(req, resp){
 
 app.post("/login", function(req, resp){
 	console.log("login function");
-	let user = bleach.sanitize(req.body.user1);
-	let pass = bleach.sanitize(req.body.pass1);
+	let user = escapeReplace(req.body.user1);
+	let pass = escapeReplace(req.body.pass1);
 	let result = accountVerify(user,pass);
 	console.log("Login successful " + result);
 	if (result){
@@ -366,11 +376,13 @@ app.post("/login", function(req, resp){
 });
 
 app.post("/getData", function(req, resp){
-	let user = bleach.sanitize(req.body.user);
-	let pass = bleach.sanitize(req.body.pass);
-	let fname = bleach.sanitize(req.body.fname);
-	let lname = bleach.sanitize(req.body.lname);
-	let address = bleach.sanitize(req.body.address);
+
+	
+	let user = escapeReplace(req.body.user);
+	let pass = escapeReplace(req.body.pass);
+	let fname = escapeReplace(req.body.fname);
+	let lname = escapeReplace(req.body.lname);
+	let address = escapeReplace(req.body.address);
 	if (accountValid(user,pass) && check_pass(pass) && fname && lname && address){
 	
 
