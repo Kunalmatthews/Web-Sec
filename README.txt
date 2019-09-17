@@ -1,6 +1,6 @@
 Group Members:
 	Kunal Matthews	amosmatthews@gmail.com
-	Paul Lindberg	phindenburgh@gmail.com
+	Paul Lindberg	pauljslindberg@gmail.com
 	Hamesh Sharma	hksharma@csu.fullerton.edu
 	Nikita Gupta	nikita_95@csu.fullerton.edu
 	Karla Lugo	klugo1@csu.fullerton.edu
